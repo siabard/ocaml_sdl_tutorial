@@ -1,0 +1,4 @@
+(executable
+ (public_name sdl2_tutorial)
+ (name main)
+ (libraries sdl2 sdl2_img sdl2_tutorial))
