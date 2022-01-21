@@ -1,4 +1,5 @@
 (executable
  (public_name sdl2_tutorial)
  (name main)
+ (link_flags -cclib -lSDL2)
  (libraries sdl2 sdl2_img sdl2_tutorial))
