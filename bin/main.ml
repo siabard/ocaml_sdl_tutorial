@@ -43,7 +43,18 @@ let make_atlas width height tile_width tile_height =
   done;
   atlas
 
-  
+
+let render_map renderer sprite_map map_atlas =
+  let map_tile = map_atlas.(0) in
+  for my = 0 to (480/32) - 1 do
+    for mx = 0 to (640/32) - 1 do
+      Render.copy renderer ~texture:(SpriteMap.find "map" sprite_map)
+        ~src_rect:(Rect.make4 ~x:map_tile.x ~y:map_tile.y ~w: 16 ~h: 16)
+        ~dst_rect:(Rect.make4 ~x:(mx*32) ~y:(my*32) ~w:32 ~h:32)
+        ()
+    done;
+  done;
+  ()
 
 
 let main () =
@@ -61,11 +72,14 @@ let main () =
   in
   let sprite_map = SpriteMap.empty in
   let sprite_map = load_sprite renderer sprite_map "key1" "resources/sprites/godot.png" in
+  let sprite_map = load_sprite renderer sprite_map "map" "resources/world/map.png" in
   let atlas = make_atlas 96 96 16 16 in
+  let map_atlas = make_atlas 64 16 16 16 in
   let first_atlas = atlas.(0) in
   let render renderer =
     Render.clear renderer;
     Render.set_scale renderer (1.0, 1.0);
+    render_map renderer sprite_map map_atlas;
     Render.copy renderer ~texture:(SpriteMap.find "key1" sprite_map)
       ~src_rect:(Rect.make4 ~x:first_atlas.x ~y:first_atlas.y ~w:16 ~h:16)
       ~dst_rect:(Rect.make4 ~x:100 ~y:100 ~w:32 ~h:32)
