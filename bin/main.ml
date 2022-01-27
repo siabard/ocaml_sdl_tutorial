@@ -21,6 +21,23 @@ let event_loop () =
     exit 0
   | _ -> ()
 
+let stage_1_map = [|
+  0; 0; 0; 0; 2; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0;
+  0; 0; 1; 1; 2; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0;
+  0; 0; 1; 1; 2; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0;
+  0; 0; 0; 0; 2; 0; 0; 0; 0; 1; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0;
+  0; 0; 0; 0; 2; 2; 2; 0; 1; 3; 1; 0; 0; 1; 1; 1; 1; 0; 0; 0;
+  0; 0; 0; 0; 0; 0; 2; 0; 0; 1; 1; 0; 0; 0; 0; 2; 2; 0; 0; 0;
+  0; 0; 0; 0; 0; 0; 2; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0;
+  0; 0; 0; 0; 0; 0; 2; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0;
+  0; 0; 0; 0; 0; 0; 2; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0;
+  0; 0; 0; 0; 0; 0; 2; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0;
+  0; 0; 0; 0; 0; 2; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0;
+  0; 0; 0; 0; 0; 2; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0;
+  0; 0; 0; 0; 0; 2; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0;
+  0; 0; 0; 0; 0; 2; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0;
+  0; 0; 0; 0; 0; 2; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0;
+|]
 
 let load_sprite renderer sprite_map id  filename =
   let rw = RWops.from_file ~filename ~mode:"rb" in
@@ -45,9 +62,11 @@ let make_atlas width height tile_width tile_height =
 
 
 let render_map renderer sprite_map map_atlas =
-  let map_tile = map_atlas.(0) in
+
   for my = 0 to (480/32) - 1 do
     for mx = 0 to (640/32) - 1 do
+      let map_tile_num = stage_1_map.(my * (640/32) + mx) in
+      let map_tile = map_atlas.(map_tile_num) in
       Render.copy renderer ~texture:(SpriteMap.find "map" sprite_map)
         ~src_rect:(Rect.make4 ~x:map_tile.x ~y:map_tile.y ~w: 16 ~h: 16)
         ~dst_rect:(Rect.make4 ~x:(mx*32) ~y:(my*32) ~w:32 ~h:32)
