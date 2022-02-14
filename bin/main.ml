@@ -6,13 +6,13 @@ module SpriteMap = Map.Make(String)
 
 
 type sprite_cell = {
-    x: int;
-    y: int;
-    w: int;
-    h: int;
-  }
+  x: int;
+  y: int;
+  w: int;
+  h: int;
+}
 
-                
+
 let event_loop () =
   match Event.poll_event () with
   | None -> ()
@@ -94,8 +94,10 @@ let main () =
   let sprite_map = load_sprite renderer sprite_map "map" "resources/world/map.png" in
   let atlas = make_atlas 96 96 16 16 in
   let map_atlas = make_atlas 64 16 16 16 in
-  let first_atlas = atlas.(0) in
+  let anim_frame = [|0; 1|] in
+  let frame: int ref = ref 0 in
   let render renderer =
+    let first_atlas = atlas.(anim_frame.(!frame)) in
     Render.clear renderer;
     Render.set_scale renderer (1.0, 1.0);
     render_map renderer sprite_map map_atlas;
@@ -104,6 +106,7 @@ let main () =
       ~dst_rect:(Rect.make4 ~x:100 ~y:100 ~w:32 ~h:32)
       ();
     Render.render_present renderer;
+    frame := 1 - (!frame);
   in
   let rec main_loop () =
     event_loop ();
